@@ -4,11 +4,11 @@ using UnityEngine;
 
 public abstract class Parameter : MonoBehaviour
 {
-    public event Action onChanged;
+    public Action onChanged;
 
-    private float _value;
+    private double _value = 1f;
 
-    public float value
+    public double value
     {
         protected set
         {
