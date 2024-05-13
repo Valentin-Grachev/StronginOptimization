@@ -5,44 +5,40 @@ public class Graph : MonoBehaviour
 {
     [SerializeField] private Function _function;
     [SerializeField] private LineRenderer _line;
+    [SerializeField] private Parameter _from;
+    [SerializeField] private Parameter _to;
 
-    private float _minX, _maxX;
-
-
-    private float _drawStep;
-    private float _lineWidth;
+    private const float drawStep = 0.01f;
 
 
 
     private void Start()
     {
-        SetSettings(min: -10f, max: 10f, drawStep: 0.05f);
-        _function.onChanged += OnFunctionChanged;
-    }
-
-    private void OnFunctionChanged() => DrawGraph();
-
-    public void SetSettings(float min, float max, float drawStep)
-    {
-        _minX = min;
-        _maxX = max;
-        _drawStep = drawStep;
-        _line.startWidth = drawStep;
-        _line.endWidth = drawStep;
+        SetWidth(0.05f);
         DrawGraph();
+        
+        _function.onChanged += DrawGraph;
+        _from.onChanged += DrawGraph;
+        _to.onChanged += DrawGraph;
+    }
+
+    public void SetWidth(float width)
+    {
+        _line.startWidth = width;
+        _line.endWidth = width;
     }
 
 
-    private void DrawGraph()
+    public void DrawGraph()
     {
         var points = new List<Vector3>();
 
-        float currentX = _minX;
-        while (currentX < _maxX)
+        float currentX = (float)_from.value;
+        while (currentX < _to.value)
         {
             float y = (float)_function.GetValue(currentX);
             points.Add(new Vector3(currentX, y, 0f));
-            currentX += _drawStep;
+            currentX += drawStep;
         }
 
         _line.positionCount = points.Count;
